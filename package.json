@@ -1,0 +1,18 @@
+{
+  "name": "snoozescape",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "SnoozeScape: An offline wind-down bedtime companion that generates calming micro-stories & ambient procedural soundscapes using open-source AI.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^3.3.3"
+  },
+  "devDependencies": {
+    "vite": "^6.2.0"
+  },
+  "license": "MIT"
+}

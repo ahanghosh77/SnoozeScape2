@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SnoozeScape — Offline Wind-Down Bedtime Companion | Open-Source AI</title>
+  <meta name="description" content="A tranquil bedtime companion built with open-source AI at its core. Generates calming bedtime micro-stories and procedural ambient soundscapes completely offline." />
+  <meta name="theme-color" content="#05070f" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦥</text></svg>" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/src/styles/index.css" />
+</head>
+<body>
+  <!-- Ambient Deep Space Starfield -->
+  <canvas id="starfield-canvas"></canvas>
+
+  <div class="app-wrapper">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand-section">
+        <div class="brand-logo-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>SnoozeScape</h1>
+          <p>
+            <span>Slow & Steady Bedtime Companion</span>
+            <span class="privacy-badge">
+              <span class="pulse-dot"></span> 100% Offline AI
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <!-- Night Light / Dimmer Toggle -->
+        <button id="btn-toggle-dimmer" class="btn-glass" title="Toggle Bedside Screen Dimmer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2"></path>
+            <path d="M12 20v2"></path>
+            <path d="m4.93 4.93 1.41 1.41"></path>
+            <path d="m17.66 17.66 1.41 1.41"></path>
+            <path d="M2 12h2"></path>
+            <path d="M20 12h2"></path>
+            <path d="m6.34 17.66-1.41 1.41"></path>
+            <path d="m19.07 4.93-1.41 1.41"></path>
+          </svg>
+          <span id="dimmer-label">Night Dimmer</span>
+        </button>
+
+        <!-- AI Engine Settings Button -->
+        <button id="btn-open-settings" class="btn-glass" title="AI Model Settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <span>AI Engine</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Grid -->
+    <main class="dashboard-grid">
+      <!-- Left Column: Sloth Mascot & Ambient Soundscape Mixer -->
+      <section class="glass-panel left-panel">
+        <div id="sloth-mascot-container"></div>
+
+        <!-- Master Soundscape Play Button -->
+        <div class="master-control-row">
+          <button id="btn-master-soundscape" class="btn-master-play">
+            <svg id="play-icon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <span id="play-text">Start Soundscape</span>
+          </button>
+        </div>
+
+        <!-- Preset Chips -->
+        <div class="presets-strip" id="presets-strip" style="margin-top: 1.5rem;">
+          <button class="preset-chip active" data-preset="sloth">🦥 Sloth Snooze</button>
+          <button class="preset-chip" data-preset="delta">🧠 432Hz Deep REM</button>
+          <button class="preset-chip" data-preset="rain">🌧️ Autumn Rain</button>
+          <button class="preset-chip" data-preset="ocean">🌊 Starry Ocean</button>
+          <button class="preset-chip" data-preset="hearth">🔥 Pine Fireplace</button>
+        </div>
+
+        <!-- Procedural Layer Controls -->
+        <div class="panel-header" style="margin-top: 0.5rem;">
+          <h2>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg>
+            Ambient Audio Layers
+          </h2>
+          <span style="font-size: 0.75rem; color: var(--text-dim);">Procedural Web Audio</span>
+        </div>
+
+        <div class="sound-layers-list">
+          <!-- Layer 1: Rain -->
+          <div class="layer-item active" id="layer-row-rain">
+            <button class="layer-icon-btn" data-layer="rain" title="Toggle Rain">🌧️</button>
+            <div class="layer-info">
+              <div class="layer-title-row">
+                <span>Gentle Rainfall</span>
+                <span class="layer-tag">Pink Noise / Droplets</span>
+              </div>
+              <input type="range" class="sound-slider" data-layer="rain" min="0" max="1" step="0.01" value="0.35" />
+            </div>
+          </div>
+
+          <!-- Layer 2: Ocean / Wind Waves -->
+          <div class="layer-item active" id="layer-row-waves">
+            <button class="layer-icon-btn" data-layer="waves" title="Toggle Waves">🌊</button>
+            <div class="layer-info">
+              <div class="layer-title-row">
+                <span>Tidal Swell & Wind</span>
+                <span class="layer-tag">Brownian LFO Filter</span>
+              </div>
+              <input type="range" class="sound-slider" data-layer="waves" min="0" max="1" step="0.01" value="0.25" />
+            </div>
+          </div>
+
+          <!-- Layer 3: Binaural 432Hz Delta Beat -->
+          <div class="layer-item active" id="layer-row-binaural">
+            <button class="layer-icon-btn" data-layer="binaural" title="Toggle 432Hz Beat">🧠</button>
+            <div class="layer-info">
+              <div class="layer-title-row">
+                <span>Delta Sleep Frequency</span>
+                <span class="layer-tag">432Hz / 3Hz REM Wave</span>
+              </div>
+              <input type="range" class="sound-slider" data-layer="binaural" min="0" max="1" step="0.01" value="0.20" />
+            </div>
+          </div>
+
+          <!-- Layer 4: Night Forest -->
+          <div class="layer-item" id="layer-row-forest">
+            <button class="layer-icon-btn" data-layer="forest" title="Toggle Forest">🌲</button>
+            <div class="layer-info">
+              <div class="layer-title-row">
+                <span>Night Forest</span>
+                <span class="layer-tag">Crickets & Breeze</span>
+              </div>
+              <input type="range" class="sound-slider" data-layer="forest" min="0" max="1" step="0.01" value="0.15" />
+            </div>
+          </div>
+
+          <!-- Layer 5: Fireplace -->
+          <div class="layer-item" id="layer-row-fire">
+            <button class="layer-icon-btn" data-layer="fire" title="Toggle Fireplace">🔥</button>
+            <div class="layer-info">
+              <div class="layer-title-row">
+                <span>Hearth Crackle</span>
+                <span class="layer-tag">Thermal Impulses</span>
+              </div>
+              <input type="range" class="sound-slider" data-layer="fire" min="0" max="1" step="0.01" value="0.15" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Audio Frequency Visualizer -->
+        <div class="visualizer-wrapper">
+          <canvas id="visualizer-canvas"></canvas>
+        </div>
+      </section>
+
+      <!-- Right Column: Bedtime Micro-Story Generator -->
+      <section class="glass-panel story-panel">
+        <div class="panel-header">
+          <h2>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+              <path d="M6 6h10"></path>
+              <path d="M6 10h10"></path>
+            </svg>
+            Wind-Down Storyweaver
+          </h2>
+          <span class="ai-pill" id="active-model-pill">Sloth Dreamweaver</span>
+        </div>
+
+        <!-- Story Configuration -->
+        <div class="story-config-bar">
+          <div class="config-item">
+            <label for="select-theme">Bedtime Setting</label>
+            <select id="select-theme" class="custom-select">
+              <option value="sloth">Barnaby's Canopy</option>
+              <option value="forest">Whispering Pines</option>
+              <option value="ocean">Starlight Lagoon</option>
+              <option value="stars">Celestial Observatory</option>
+              <option value="rain">Autumn Attic Rain</option>
+            </select>
+          </div>
+
+          <div class="config-item">
+            <label for="select-mood">Pacing & Mood</label>
+            <select id="select-mood" class="custom-select">
+              <option value="unhurried">Slow & Unhurried</option>
+              <option value="hypnagogic">Hypnagogic Whispers</option>
+              <option value="cozy">Warm & Grounded</option>
+              <option value="celestial">Deep Space Silence</option>
+            </select>
+          </div>
+
+          <div class="config-item">
+            <label for="select-engine">AI Generation Mode</label>
+            <select id="select-engine" class="custom-select">
+              <option value="procedural">Instant Dreamweaver (0s)</option>
+              <option value="browser-llm">WebGPU Open Weights (Browser)</option>
+              <option value="ollama">Local Ollama (Air-Gapped)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Action Row -->
+        <div class="story-action-row">
+          <button id="btn-generate-story" class="btn-generate">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+            </svg>
+            <span>Weave Story</span>
+          </button>
+
+          <button id="btn-narrate-story" class="btn-narrate" title="Play soothing voice narration">
+            <svg id="narrate-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            </svg>
+            <span id="narrate-label">Read Aloud</span>
+          </button>
+        </div>
+
+        <!-- Story Reader Container -->
+        <div class="story-scroll-area" id="story-scroll-area">
+          <div class="story-content" id="story-text-container">
+            <h3>Barnaby's Golden Canopy</h3>
+            <p>High in the emerald crown of the rainforest, Barnaby the sloth loosened his gentle grip on the ancient cecropia branch. Below him, the dusk turned the world to velvet.</p>
+            <p>He closed his amber eyes, savoring the cool mist rolling across the broad leaves. Each breath came slow, steady, and unhurried—a quiet rhythm that matched the heartbeat of the forest.</p>
+            <p>The fireflies awoke one by one, trailing soft lanterns in the quiet air. Barnaby felt the moss beneath him cradle his shoulders. With nothing left to do and nowhere to go, he settled into sleep, weightless and profoundly content.</p>
+          </div>
+        </div>
+
+        <!-- AI Status Footer -->
+        <div class="ai-status-footer">
+          <div class="status-left">
+            <span class="pulse-dot"></span>
+            <span id="ai-engine-status-text">Sloth Dreamweaver engine active</span>
+          </div>
+          <span style="font-size: 0.7rem; color: var(--text-dim);">Zero Cloud Telemetry</span>
+        </div>
+      </section>
+    </main>
+
+    <!-- Sleep Timer Strip -->
+    <section class="timer-strip">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">SLEEP FADE TIMER</div>
+          <div class="timer-digits" id="timer-display">30:00</div>
+        </div>
+      </div>
+
+      <div class="timer-buttons">
+        <button class="btn-timer-chip" data-mins="15">15 min</button>
+        <button class="btn-timer-chip active" data-mins="30">30 min</button>
+        <button class="btn-timer-chip" data-mins="45">45 min</button>
+        <button class="btn-timer-chip" data-mins="60">60 min</button>
+      </div>
+    </section>
+
+    <!-- Hacktoberfest Open Innovation Manifesto -->
+    <section class="open-manifesto-card">
+      <div class="manifesto-header">
+        <span style="font-size: 1.5rem;">🦥</span>
+        <h3>Why Open Innovation Matters for SnoozeScape</h3>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted);">
+        Created for the <strong>Hacktoberfest Open-Source AI Challenge Week 3: Slow and Steady (International Sloth Day)</strong>. Here is why open-source AI is the load-bearing foundation of this project:
+      </p>
+
+      <div class="manifesto-points">
+        <div class="manifesto-box">
+          <h4>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 12 2 2 4-4"/></svg>
+            100% Offline & Airplane-Ready
+          </h4>
+          <p>Runs on a laptop or bedside tablet with zero internet connection. Your bedtime companion works even in off-grid cabins, during power outages, or in airplane mode.</p>
+        </div>
+
+        <div class="manifesto-box">
+          <h4>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+            Absolute Bedtime Privacy
+          </h4>
+          <p>Closed APIs log prompts and habits to remote corporate datacenters. SnoozeScape runs open weights directly on your machine—your sleep data never leaves your bedroom.</p>
+        </div>
+
+        <div class="manifesto-box">
+          <h4>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            $0 Forever (Rewards Laziness)
+          </h4>
+          <p>No subscriptions, no rate limits, no API token burnout. Set it up once, channel your inner sloth, and let open models lull you to sleep every single night for free.</p>
+        </div>
+
+        <div class="manifesto-box">
+          <h4>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            Render & Docker Native
+          </h4>
+          <p>Deployable with one click to Render (qualifying for the Best Use of Render prize track) or runnable as a standalone static site anywhere.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
